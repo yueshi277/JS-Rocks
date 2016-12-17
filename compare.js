@@ -57,7 +57,6 @@ var	newData = [
   }
 ];
 
-
  function compare(oldData, newData) {
   var result = {
       added: [],
