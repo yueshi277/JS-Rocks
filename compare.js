@@ -27,7 +27,7 @@ var oldData = [
     "email": "simonl@jsrocks.com"
   }
 ];
-var	newData = [
+var newData = [
   {
     "firstName": "Tom",
     "lastName": "Zhang",
@@ -57,20 +57,20 @@ var	newData = [
   }
 ];
 
- function compare(oldData, newData) {
+function compare(oldData, newData) {
   var result = {
-      added: [],
+    added: [],
     deleted: [],
     modified: []
   };
   var old = oldData;
   newData.forEach(function(n) {
     var index = old.findIndex(function(o){
-        return n.firstName === o.firstName && n.lastName === o.lastName;
+      return n.firstName === o.firstName && n.lastName === o.lastName;
     });
 
     if(index < 0 ) {
-        result.added.push(n);
+      result.added.push(n);
     } else {
       if (JSON.stringify(oldData[index]) !== JSON.stringify(n)) {
         result.modified.push(n);
