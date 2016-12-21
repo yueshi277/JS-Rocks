@@ -13,7 +13,7 @@ function BST() {
 
 function insert(data) {
 	var n = new Node(data, null, null);
-	if (this.root == null) {
+	if (!this.root) {
 		this.root = n;
 	}
 	else {
@@ -21,16 +21,16 @@ function insert(data) {
 		var parent;
 		while (true) {
 			parent = current;
-			if (data.email< current.data.email) {
+			if (data.email < current.data.email) {
 				current = current.left;
-				if (current == null) {
+				if (!current) {
 					parent.left = n;
 					break;
 				}
 			}
 			else {
 				current = current.right;
-				if (current == null) {
+				if (!current) {
 					parent.right = n;
 					break;
 				}
@@ -41,14 +41,14 @@ function insert(data) {
 
 function find(data) {
 	var current = this.root;
-	while (current.data.email != data) {
+	while (current.data.email !== data) {
 		if (data < current.data.email) {
 			current = current.left;
 		}
 		else {
 			current = current.right;
 		}
-		if (current == null) {
+		if (!current) {
 			return null;
 		}
 	}
@@ -56,7 +56,7 @@ function find(data) {
 }
 
 function getSmallest(node) {
-	if (node.left == null) {
+	if (!node.left) {
 		return node;
 	}
 	else {
@@ -69,20 +69,20 @@ function remove(data) {
 }
 
 function removeNode(node, data) {
-	if (node == null) {
+	if (!node) {
 		return null;
 	}
-	if (data == node.data.email) {
+	if (data === node.data.email) {
 
-		if (node.left == null && node.right == null) {
+		if (!node.left  && !node.right) {
 			return null;
 		}
 
-		if (node.left == null) {
+		if (!node.left) {
 			return node.right;
 		}
 
-		if (node.right == null) {
+		if (!node.right) {
 			return node.left;
 		}
 
@@ -108,7 +108,8 @@ function createModifiedObj(oldObj, newObj, props) {
 		if (newObj[prop] !== oldObj[prop]) {
 			m[prop]= [newObj[prop], oldObj[prop]];
 			isModified = true;
-		} else {
+		}
+		else {
 			m[prop]= newObj[prop];
 		}
 	});
@@ -132,17 +133,18 @@ function compare(oldData, newData) {
 
 	newData.forEach(function(n) {
 		var current = nodes.find(n.email);
-		if(!current) {
+		if (!current) {
 			result.added.push(n);
-		} else {
+		}
+		else {
 			var m = createModifiedObj(current.data, n, props);
-			if(!!m) result.modified.push(m);
+			if (!!m) result.modified.push(m);
 			nodes.remove(current.data.email)
 		}
 	});
 
 	function inOrder(node) {
-		if (!(node == null)) {
+		if (!!node) {
 			inOrder(node.left);
 			result.deleted.push(node.data);
 			inOrder(node.right);
