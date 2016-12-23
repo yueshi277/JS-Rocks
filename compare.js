@@ -1,39 +1,41 @@
+let getModifiedObj = (oldObj, newObj, props) => {
+  let m = {}, isModified = false;
 
-var createModifiedObj = function (oldObj, newObj, props) {
-  var m = {}, isModified = false;
-
-  props.forEach(function(prop) {
+  props.forEach((prop) => {
     if (newObj[prop] !== oldObj[prop]) {
-      m[prop]= [newObj[prop], oldObj[prop]];
+      m[prop]= oldObj[prop];
       isModified = true;
-    } else {
-      m[prop]= newObj[prop];
     }
-  });
+  })
 
-  return isModified? m : false;
+  return isModified? m : undefined;
 };
 
-var compare = function(oldData, newData) {
-  var result = {
+let compare = (oldData, newData) => {
+  let result = {
     added: [],
-    deleted: [],
+    deleted: null,
     modified: []
   };
-  var old = oldData.slice();
-  var props = Object.keys(newData[0]);
 
-  newData.forEach(function(n) {
-    var index = old.findIndex(function(o) {
-      return n.email === o.email;
+  let old = oldData.slice();
+  const key = 'email';
+  const props = ['firstName', 'lastName', 'ext', 'cell', 'alt', 'title', 'email'];
+
+  newData.forEach((n) => {
+    let index = old.findIndex((o) => {
+      return n[key] === o[key];
     });
 
-    if(index < 0 ) {
+    if (index < 0) {
       result.added.push(n);
-    }
-    else {
-      var m = createModifiedObj(old[index], n, props);
-      if(!!m) result.modified.push(m);
+    } else {
+      const m = getModifiedObj(old[index], n, props);
+      if (m) result.modified.push({
+        'current': n,
+        'diff': m
+      });
+
       old.splice(index, 1);
     }
   });
@@ -43,9 +45,3 @@ var compare = function(oldData, newData) {
  };
 
 module.exports = compare;
-
-
-
-
-
-

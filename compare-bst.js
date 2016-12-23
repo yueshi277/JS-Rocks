@@ -101,21 +101,18 @@ function removeNode(node, data) {
 	}
 }
 
-function createModifiedObj(oldObj, newObj, props) {
+var getModifiedObj = function(oldObj, newObj, props) {
 	var m = {}, isModified = false;
 
 	props.forEach(function(prop) {
 		if (newObj[prop] !== oldObj[prop]) {
-			m[prop]= [newObj[prop], oldObj[prop]];
+			m[prop]= oldObj[prop];
 			isModified = true;
-		}
-		else {
-			m[prop]= newObj[prop];
 		}
 	});
 
-	return isModified? m : false;
-}
+	return isModified? m : undefined;
+};
 
 function compare(oldData, newData) {
 	var result = {
@@ -137,8 +134,11 @@ function compare(oldData, newData) {
 			result.added.push(n);
 		}
 		else {
-			var m = createModifiedObj(current.data, n, props);
-			if (!!m) result.modified.push(m);
+			var m = getModifiedObj(current.data, n, props);
+			if (!!m) result.modified.push({
+				'current': n,
+				'diff': m
+			});
 			nodes.remove(current.data.email)
 		}
 	});
@@ -156,9 +156,3 @@ function compare(oldData, newData) {
 }
 
 module.exports = compare;
-
-
-
-
-
-
