@@ -17,7 +17,7 @@ request(url, function(error, response, html){
 		$('tr td').filter(function(){
 			var data = $(this);
 			var value = data.text();
-			
+
 			i++;
 			switch(i) {
 				case 1: json.firstName = value;
@@ -37,7 +37,7 @@ request(url, function(error, response, html){
 			}
 
 			if(i == 7) {
-				employee.push(json);
+				employee.push(Object.assign({}, json));
 				i = 0
 			}
 		});
