@@ -1,36 +1,39 @@
 var request = require('request');
 var cheerio = require('cheerio');
+var express = require('express');
 var fs = require('fs');
+var app     = express();
 
-var url = 'http://web-aaronding.rhcloud.com/employee.html';
-var employee = [];
 
-request(url, function(error, response, html){
 
-	if (!error) {
+app.get('/', function(req, res) {
 
-		var $ = cheerio.load(html);
-    var obj = {};
-		const keys = ['firstName', 'lastName', 'ext', 'cell', 'alt', 'title', 'email'];
+	const url = 'http://web-aaronding.rhcloud.com/employee.html';
 
-		$('tr:not(:first-child)').filter(function(i, el) {
-			var data = $(el).find('td');
+	request(url, function(error, response, html){
+		var employee = [];
+		if (!error) {
 
-      if(data.length) {
-				data.each(function(i, el) {
-					obj[keys[i]] = $(el).text();
-				});
+			const $ = cheerio.load(html);
+			var obj = {};
+			const keys = ['firstName', 'lastName', 'ext', 'cell', 'alt', 'title', 'email'];
 
-				employee.push(Object.assign({}, obj));
-			}
+			$('tr:not(:first-child)').filter(function(i, el) {
+				var data = $(el).find('td');
 
-		});
+				if(data.length) {
+					data.each(function(i, el) {
+						obj[keys[i]] = $(el).text();
+					});
 
-		fs.writeFile('output.json', JSON.stringify(employee, null, 4), function(err){
-			console.log('File successfully written!');
-		})
-	}
+					employee.push(Object.assign({}, obj));
+				}
+
+			});
+
+			res.send(employee);
+		}
+	});
 });
 
-
-
+app.listen('8000');
