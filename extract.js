@@ -10,11 +10,12 @@ app.get('/', function(req, res) {
 
 	request(url, function(error, response, html){
 		var employee = [];
+
 		if (!error) {
 
 			const $ = cheerio.load(html);
-			var obj = {};
 			const keys = ['firstName', 'lastName', 'ext', 'cell', 'alt', 'title', 'email'];
+			var obj = {};
 
 			$('tr:not(:first-child)').filter(function(i, el) {
 				var data = $(el).find('td');
