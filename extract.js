@@ -7,39 +7,23 @@ var employee = [];
 
 request(url, function(error, response, html){
 
-	if(!error){
+	if (!error) {
 
 		var $ = cheerio.load(html);
+    var obj = {};
+		const keys = ['firstName', 'lastName', 'ext', 'cell', 'alt', 'title', 'email'];
 
-		var i = 0;
-		var json = { firstName: "", lastName: "", ext: "", cell: "", alt: "", title : "", email: ""} ;
+		$('tr:not(:first-child)').filter(function(i, el) {
+			var data = $(el).find('td');
 
-		$('tr td').filter(function(){
-			var data = $(this);
-			var value = data.text();
+      if(data.length) {
+				data.each(function(i, el) {
+					obj[keys[i]] = $(el).text();
+				});
 
-			i++;
-			switch(i) {
-				case 1: json.firstName = value;
-					break;
-				case 2: json.lastName = value;
-					break;
-				case 3: json.ext = value;
-					break;
-				case 4: json.cell = value;
-					break;
-				case 5: json.alt = value;
-					break;
-				case 6: json.title = value;
-					break;
-				case 7: json.email = value;
-					break;
+				employee.push(Object.assign({}, obj));
 			}
 
-			if(i == 7) {
-				employee.push(Object.assign({}, json));
-				i = 0
-			}
 		});
 
 		fs.writeFile('output.json', JSON.stringify(employee, null, 4), function(err){
