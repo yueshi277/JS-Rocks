@@ -1,38 +1,42 @@
 var request = require('request');
 var cheerio = require('cheerio');
-var express = require('express');
+var Promise = require("promise");
 
-var app     = express();
+const url = 'http://web-aaronding.rhcloud.com/employee.html';
 
-app.get('/', function(req, res) {
+function getData(url) {
 
-	const url = 'http://web-aaronding.rhcloud.com/employee.html';
+	return new Promise(function (resolve, reject) {
+		request(url, function (error, response, html) {
+			var employee = [];
 
-	request(url, function(error, response, html){
-		var employee = [];
+			if (!error) {
+				const $ = cheerio.load(html);
+				const keys = ['firstName', 'lastName', 'ext', 'cell', 'alt', 'title', 'email'];
+				var obj = {};
 
-		if (!error) {
+				$('tr:not(:first-child)').filter(function (i, el) {
+					var data = $(el).find('td');
 
-			const $ = cheerio.load(html);
-			const keys = ['firstName', 'lastName', 'ext', 'cell', 'alt', 'title', 'email'];
-			var obj = {};
+					if (data.length) {
+						data.each(function (i, el) {
+							obj[keys[i]] = $(el).text();
+						});
 
-			$('tr:not(:first-child)').filter(function(i, el) {
-				var data = $(el).find('td');
+						employee.push(Object.assign({}, obj));
+					}
+				});
+				resolve(employee);
 
-				if(data.length) {
-					data.each(function(i, el) {
-						obj[keys[i]] = $(el).text();
-					});
-
-					employee.push(Object.assign({}, obj));
-				}
-
-			});
-
-			res.send(employee);
-		}
+			} else {
+				return reject(error);
+			}
+		});
 	});
-});
+}
 
-app.listen('8000');
+getData(url).then(function(data) {
+	console.log(data);
+}, function(err) {
+	console.error("%s; %s", err.message, url);
+});
