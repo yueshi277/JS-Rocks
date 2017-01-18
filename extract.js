@@ -25,8 +25,8 @@ rp(options)
   	    });
 
   	    employee.push(Object.assign({}, obj));
-	  }
-	});
+  	  }
+  	});
 	console.log(employee);
   })
   .catch(function (err) {
