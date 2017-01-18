@@ -6,30 +6,30 @@ const url = 'http://web-aaronding.rhcloud.com/employee.html';
 var options = {
   uri: url,
   transform: function (body) {
-  	return cheerio.load(body);
+    return cheerio.load(body);
   }
 };
 
 rp(options)
   .then(function ($) {
-  	var obj = {};
-  	var employee = [];
-  	const keys = ['firstName', 'lastName', 'ext', 'cell', 'alt', 'title', 'email'];
+    var obj = {};
+    var employee = [];
+    const keys = ['firstName', 'lastName', 'ext', 'cell', 'alt', 'title', 'email'];
 
-  	$('tr:not(:first-child)').filter(function (i, el) {
-  	  var data = $(el).find('td');
+    $('tr:not(:first-child)').filter(function (i, el) {
+      var data = $(el).find('td');
 
-  	  if (data.length) {
-  	    data.each(function (i, el) {
-  	      obj[keys[i]] = $(el).text();
-  	    });
+      if (data.length) {
+        data.each(function (i, el) {
+          obj[keys[i]] = $(el).text();
+        });
 
-  	    employee.push(Object.assign({}, obj));
-  	  }
-  	});
+        employee.push(Object.assign({}, obj));
+      }
+    });
   	
-  	console.log(employee);
+    console.log(employee);
   })
   .catch(function (err) {
-  	console.error("%s; %s", err.error.message, err.options.url);
+    console.error("%s; %s", err.error.message, err.options.url);
   });
