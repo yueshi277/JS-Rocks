@@ -27,7 +27,8 @@ rp(options)
   	    employee.push(Object.assign({}, obj));
   	  }
   	});
-	console.log(employee);
+  	
+  	console.log(employee);
   })
   .catch(function (err) {
   	console.error("%s; %s", err.error.message, err.options.url);
