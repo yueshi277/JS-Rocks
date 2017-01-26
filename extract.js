@@ -3,8 +3,6 @@ var request = require('request');
 var Promise = require('promise');
 var fs = require('fs');
 
-const url = 'http://web-aaronding.rhcloud.com/employee.html';
-
 function extract(url) {
 
   return new Promise(function (resolve, reject) {
