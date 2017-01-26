@@ -92,7 +92,6 @@ extract(url, keys).then((data) => {
   jsonfile.readFile(oldDataPath, (err, old) => {
     console.log(compare(old, data));
   });
-
 }, (err) => {
   console.error(err);
 });

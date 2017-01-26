@@ -3,13 +3,12 @@ var request = require('request');
 var Promise = require('promise');
 var fs = require('fs');
 
-function extract(url) {
+function extract(url, keys) {
 
   return new Promise(function (resolve, reject) {
     request(url, function (err, res, html) {
       var employee = [];
       var obj = {};
-      const keys = ['firstName', 'lastName', 'ext', 'cell', 'alt', 'title', 'email'];
 
       if (err) {
         return reject(err);
@@ -33,12 +32,9 @@ function extract(url) {
         }
       });
 
-      fs.writeFile('./data/newData.json', JSON.stringify(employee, null, 4), function(err){
-        console.log('File successfully written!');
-      });
       resolve(employee);
 
-    });
+    }).pipe(fs.createWriteStream('./data/newData.json'));
   });
 }
 
