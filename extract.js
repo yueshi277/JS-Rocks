@@ -3,7 +3,7 @@ var request = require('request');
 var Promise = require('promise');
 var fs = require('fs');
 
-function extract(url, keys) {
+function extract(url, keys, path) {
 
   return new Promise(function (resolve, reject) {
     request(url, function (err, res, html) {
@@ -34,7 +34,7 @@ function extract(url, keys) {
 
       resolve(employee);
 
-    }).pipe(fs.createWriteStream('./data/newData.json'));
+    }).pipe(fs.createWriteStream(path));
   });
 }
 

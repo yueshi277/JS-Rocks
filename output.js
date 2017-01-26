@@ -7,6 +7,7 @@ const jsonfile = require('jsonfile');
 const url = 'http://web-aaronding.rhcloud.com/employee.html';
 const keys = ['firstName', 'lastName', 'ext', 'cell', 'alt', 'title', 'email'];
 const oldDataPath = './data/oldData.json';
+const newDataPath = './data/newData.json';
 
 let getModifiedObj = (oldObj, newObj, keys) => {
   let m = {}, isModified = false;
@@ -53,7 +54,7 @@ let compare = (oldData, newData) => {
   return result;
 };
 
-let extract = (url, keys) => {
+let extract = (url, keys, path) => {
 
   return new Promise((resolve, reject) => {
     request(url, (err, res, html) => {
@@ -84,11 +85,11 @@ let extract = (url, keys) => {
 
       resolve(employee);
 
-    }).pipe(fs.createWriteStream('./data/newData.json'));
+    }).pipe(fs.createWriteStream(path));
   });
 }
 
-extract(url, keys).then((data) => {
+extract(url, keys, newDataPath).then((data) => {
   jsonfile.readFile(oldDataPath, (err, old) => {
     console.log(compare(old, data));
   });
