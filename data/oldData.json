@@ -1,0 +1,110 @@
+[
+    {
+        "firstName": "Tom",
+        "lastName": "Zhang",
+        "ext": "2065",
+        "cell": "647-333-4850",
+        "alt": "289-234-1961",
+        "title": "Software Developer",
+        "email": "tomz@jsrocks.com"
+    },
+    {
+        "firstName": "Jerry",
+        "lastName": "Li",
+        "ext": "3847",
+        "cell": "416-342-5947",
+        "alt": "289-294-5760",
+        "title": "Team Lead, Front End",
+        "email": "jerryl@jsrocks.com"
+    },
+    {
+        "firstName": "Mike",
+        "lastName": "Zhang",
+        "ext": "3116",
+        "cell": "",
+        "alt": "",
+        "title": "Software Developer",
+        "email": "mikez@jsrocks.com"
+    },
+    {
+        "firstName": "Deric",
+        "lastName": "Zhao",
+        "ext": "3273",
+        "cell": "",
+        "alt": "",
+        "title": "QA Analyst",
+        "email": "dericz@jsrocks.com"
+    },
+    {
+        "firstName": "Brian",
+        "lastName": "Sun",
+        "ext": "3113",
+        "cell": "",
+        "alt": "",
+        "title": "Flash Designer",
+        "email": "brians@jsrocks.com"
+    },
+    {
+        "firstName": "Alex",
+        "lastName": "Xie",
+        "ext": "3184",
+        "cell": "",
+        "alt": "",
+        "title": "Database Administrator",
+        "email": "alexx@jsrocks.com"
+    },
+    {
+        "firstName": "Helen",
+        "lastName": "Wu",
+        "ext": "3109",
+        "cell": "416-867-2738",
+        "alt": "",
+        "title": "QA Analyst",
+        "email": "helenw@jsrocks.com"
+    },
+    {
+        "firstName": "Paul",
+        "lastName": "Wang",
+        "ext": "3320",
+        "cell": "",
+        "alt": "",
+        "title": "Senior Software Developer",
+        "email": "paulw@jsrocks.com"
+    },
+    {
+        "firstName": "Tim",
+        "lastName": "Liu",
+        "ext": "3339",
+        "cell": "",
+        "alt": "",
+        "title": "Software Developer Mobile Coop",
+        "email": "timl@jsrocks.com"
+    },
+    {
+        "firstName": "Vince",
+        "lastName": "Hu",
+        "ext": "3158",
+        "cell": "",
+        "alt": "",
+        "title": "Sr. Software Developer",
+        "email": "vinceh@jsrocks.com"
+    },
+    {
+        "firstName": "Henry",
+        "lastName": "Xiang",
+        "ext": "3021",
+        "cell": "416-857-0595",
+        "alt": "1234",
+        "title": "Sr. Manager, Information Security and Infastructure",
+        "email": "henryx@jsrocks.com"
+    },
+    {
+        "firstName": "Kevin",
+        "lastName": "Jia",
+        "ext": "3081",
+        "cell": "647-753-0483",
+        "alt": "416-785-6843",
+        "title": "Team Lead, Infrastructure Design",
+        "email": "kevinj@jsrocks.com"
+    }
+]
