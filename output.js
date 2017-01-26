@@ -14,10 +14,10 @@ let getModifiedObj = (oldObj, newObj, keys) => {
 
   keys.forEach((prop) => {
     if (newObj[prop] !== oldObj[prop]) {
-    m[prop]= oldObj[prop];
-    isModified = true;
-  }
-})
+      m[prop]= oldObj[prop];
+      isModified = true;
+    }
+  })
 
   return isModified? m : undefined;
 };
@@ -29,26 +29,26 @@ let compare = (oldData, newData) => {
     modified: []
   };
 
-  let old = oldData.slice();
+  const old = oldData.slice();
   const key = 'email';
 
   newData.forEach((n) => {
     let index = old.findIndex((o) => {
-        return n[key] === o[key];
-});
-
-  if (index < 0) {
-    result.added.push(n);
-  } else {
-    const m = getModifiedObj(old[index], n, keys);
-    if (m) result.modified.push({
-      'current': n,
-      'diff': m
+      return n[key] === o[key];
     });
 
-    old.splice(index, 1);
-  }
-});
+    if (index < 0) {
+      result.added.push(n);
+    } else {
+      const m = getModifiedObj(old[index], n, keys);
+      if (m) result.modified.push({
+        'current': n,
+        'diff': m
+      });
+
+      old.splice(index, 1);
+    }
+  })
 
   result.deleted = old;
   return result;
@@ -58,8 +58,8 @@ let extract = (url, keys, path) => {
 
   return new Promise((resolve, reject) => {
     request(url, (err, res, html) => {
-      var employee = [];
-      var obj = {};
+      let employee = [];
+      let obj = {};
 
       if (err) {
         return reject(err);
@@ -72,7 +72,7 @@ let extract = (url, keys, path) => {
       const $ = cheerio.load(html);
 
       $('tr:not(:first-child)').filter((i, el) => {
-        var data = $(el).find('td');
+        let data = $(el).find('td');
 
         if (data.length) {
           data.each(function (i, el) {
@@ -87,12 +87,13 @@ let extract = (url, keys, path) => {
 
     }).pipe(fs.createWriteStream(path));
   });
-}
+};
 
-extract(url, keys, newDataPath).then((data) => {
-  jsonfile.readFile(oldDataPath, (err, old) => {
-    console.log(compare(old, data));
+extract(url, keys, newDataPath)
+  .then((data) => {
+    jsonfile.readFile(oldDataPath, (err, old) => {
+      console.log(compare(old, data));
+    });
+  }, (err) => {
+    console.error(err);
   });
-}, (err) => {
-  console.error(err);
-});
