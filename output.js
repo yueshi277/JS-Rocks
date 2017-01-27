@@ -1,8 +1,8 @@
 const cheerio = require('cheerio');
 const request = require('request');
 const Promise = require('promise');
-const fs = require('fs');
 const jsonfile = require('jsonfile');
+const fs = require('fs');
 
 const url = 'http://web-aaronding.rhcloud.com/employee.html';
 const keys = ['firstName', 'lastName', 'ext', 'cell', 'alt', 'title', 'email'];
@@ -17,12 +17,12 @@ let getModifiedObj = (oldObj, newObj, keys) => {
       m[prop]= oldObj[prop];
       isModified = true;
     }
-  })
+  });
 
   return isModified? m : undefined;
 };
 
-let compare = (oldData, newData) => {
+let compare = (oldData, newData, keys) => {
   let result = {
     added: [],
     deleted: null,
@@ -41,20 +41,22 @@ let compare = (oldData, newData) => {
       result.added.push(n);
     } else {
       const m = getModifiedObj(old[index], n, keys);
-      if (m) result.modified.push({
-        'current': n,
-        'diff': m
-      });
+      if (m) {
+        result.modified.push({
+          'current': n,
+          'diff': m
+        });
+      }
 
       old.splice(index, 1);
     }
-  })
+  });
 
   result.deleted = old;
   return result;
 };
 
-let extract = (url, keys, path) => {
+let extract = (url, keys) => {
 
   return new Promise((resolve, reject) => {
     request(url, (err, res, html) => {
@@ -72,7 +74,7 @@ let extract = (url, keys, path) => {
       const $ = cheerio.load(html);
 
       $('tr:not(:first-child)').filter((i, el) => {
-        let data = $(el).find('td');
+        const data = $(el).find('td');
 
         if (data.length) {
           data.each(function (i, el) {
@@ -84,15 +86,15 @@ let extract = (url, keys, path) => {
       });
 
       resolve(employee);
-
-    }).pipe(fs.createWriteStream(path));
+    });
   });
 };
 
-extract(url, keys, newDataPath)
-  .then((data) => {
-    jsonfile.readFile(oldDataPath, (err, old) => {
-      console.log(compare(old, data));
+extract(url, keys)
+  .then((newData) => {
+    jsonfile.writeFile(newDataPath, newData );
+    jsonfile.readFile(oldDataPath, (err, oldData) => {
+      console.log(compare(oldData, newData, keys));
     });
   }, (err) => {
     console.error(err);
