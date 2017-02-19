@@ -50,10 +50,10 @@ let getCategoryAdsList = item => {
         'link': 'h3 a@href, h2 a@href'
       })
       .data(list => {
-	      list.link = base + list.link.replace(/s=.*&/, '');
-	      list.name = list.name.replace(/\//g, '|');
-	      result.list.push(list);
-	      resolve(result);
+        list.link = base + list.link.replace(/s=.*&/, '');
+        list.name = list.name.replace(/\//g, '|');
+        result.list.push(list);
+        resolve(result);
       });
   });
 };
@@ -120,12 +120,12 @@ let addImagesLocalPath = (ads) => {
   return new Promise((resolve, reject) => {
     ads.map(item => {
       item.list.map(list => {
-	if (list.images) {
-	  list.images.map(img => {
-	    const dir = `results/images/${item.site}/${item.category}/${list.name}/${getFilename(img.src)}`;
-	    img.local = path.join(__dirname, dir);
-	  });
-	}
+        if (list.images) {
+          list.images.map(img => {
+            const dir = `results/images/${item.site}/${item.category}/${list.name}/${getFilename(img.src)}`;
+            img.local = path.join(__dirname, dir);
+          });
+        }
       });
     });
     resolve(ads);
@@ -165,7 +165,7 @@ let downloadImgs = ads => {
               console.log('downloaded');
             });
           });
-       }
+        }
       });
     });
     resolve(ads);
