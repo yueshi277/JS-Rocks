@@ -3,6 +3,7 @@ const fs = require('fs'),
   request = require('request'),
   mkdirp = require('mkdirp'),
   Promise = require('promise'),
+  jsonfile = require('jsonfile'),
   osmosis = require('osmosis');
 
 const BASE_URL = {
@@ -28,8 +29,8 @@ const categories = [
   list: []
 }, {
   site: "yorkbbs",
-  category: "房屋保险",
-  url: "/default/HomeIns",
+  category: "命理风水",
+  url: "/default/fengshui",
   list: []
 }];
 
@@ -176,11 +177,10 @@ let run = (categories) => {
   getCategoriesAdList(categories).then(getAdsDetails).then(addImagesLocalPath).then(createDir).then(downloadImgs).then(result => {
     mkdirp(path.join(__dirname, 'results'), (err) => {
       if (err) { console.error(err); }
-      else { console.log('results dir'); }
-    });
-    const jsonpath = path.join(__dirname, 'results/results.json');
-    fs.writeFile(jsonpath, JSON.stringify(result), err => {
-      if (err) return console.log(err);
+      else {
+        const jsonpath = path.join(__dirname, 'results/results.json');
+        jsonfile.writeFile(jsonpath, result );
+      }
     });
   }, err => {
     console.log(err);
