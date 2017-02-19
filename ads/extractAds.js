@@ -46,14 +46,14 @@ let getCategoryAdsList = item => {
       .get(base + item.url)
       .find('ol > li')
       .set({
-	'name': 'h3 a, h2 a',
-	'link': 'h3 a@href, h2 a@href'
+        'name': 'h3 a, h2 a',
+        'link': 'h3 a@href, h2 a@href'
       })
       .data(list => {
-	list.link = base + list.link.replace(/s=.*&/, '');
-	list.name = list.name.replace(/\//g, '|');
-	result.list.push(list);
-	resolve(result);
+	      list.link = base + list.link.replace(/s=.*&/, '');
+	      list.name = list.name.replace(/\//g, '|');
+	      result.list.push(list);
+	      resolve(result);
       });
   });
 };
@@ -69,27 +69,27 @@ let getAdDetails = (ad) => {
       .get(ad.link)
       .find('#MainColumn, .views')
       .set({
-	'contact': '#PostBox tr:nth-child(5) td:first-child, .item-views-cont em:first-child a',
-	'tel': '#PostBox tr:nth-child(5) td:nth-child(2), .item-cont-bigphone font',
-	'address': '#PostBox tr:nth-child(9), .views-bigphone-address',
-	'intro': '#FontPlus, .views-detail-text',
-	'images': ['.attachlist img@src, .views-detail-text img@src']
+	      'contact': '#PostBox tr:nth-child(5) td:first-child, .item-views-cont em:first-child a',
+	      'tel': '#PostBox tr:nth-child(5) td:nth-child(2), .item-cont-bigphone font',
+	      'address': '#PostBox tr:nth-child(9), .views-bigphone-address',
+	      'intro': '#FontPlus, .views-detail-text',
+	      'images': ['.attachlist img@src, .views-detail-text img@src']
       })
       .data(list => {
-	ad.contact = list.contact.replace(/【联系人】/, '');
-	ad.tel = list.tel.replace(/【联系电话】/, '');
-	ad.address = list.address.replace(/【具体位置】/, '');
-	if (list.images.length > 0) {
-	  let pics = [], pic = {};
-	  list.images.map(img => {
-	    pic.src = img;
-	    pics.push(Object.assign({}, pic));
-	  });
-	  ad.images = pics
-	}
-	resolve(ad);
+	      ad.contact = list.contact.replace(/【联系人】/, '');
+	      ad.tel = list.tel.replace(/【联系电话】/, '');
+        ad.address = list.address.replace(/【具体位置】/, '');
+	      if (list.images.length > 0) {
+	        let pics = [], pic = {};
+	        list.images.map(img => {
+            pic.src = img;
+            pics.push(Object.assign({}, pic));
+	        });
+	        ad.images = pics
+	      }
+	      resolve(ad);
       });
-    });
+  });
 };
 
 let getListAdDetails = (item) =>  {
