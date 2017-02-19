@@ -1,0 +1,10 @@
+{
+  "name": "extract-ads",
+  "version": "0.0.1",
+  "dependencies": {
+    "mkdirp": "^0.5.1",
+    "osmosis": "^1.1.2",
+    "promise": "^7.1.1",
+    "request": "^2.79.0"
+  }
+}
