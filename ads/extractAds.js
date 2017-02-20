@@ -12,27 +12,37 @@ const BASE_URL = {
 };
 
 const categories = [
-{
-  site: "ca51",
-  category: "画廊画框",
-  url: "servicedisplay.php?serviceid=140",
-  list: []
-}, {
-  site: "ca51",
-  category: "工具出租",
-  url: "servicedisplay.php?serviceid=132",
-  list: []
-}, {
-  site: "yorkbbs",
-  category: "画廊画框",
-  url: "/default/hualang",
-  list: []
-}, {
-  site: "yorkbbs",
-  category: "命理风水",
-  url: "/default/fengshui",
-  list: []
-}];
+  {
+    site: "ca51",
+    category: "画廊画框",
+    url: "servicedisplay.php?serviceid=140",
+    list: []
+  }, {
+    site: "ca51",
+    category: "窗帘缝纫",
+    url: "servicedisplay.php?serviceid=77",
+    list: []
+  }, {
+    site: "ca51",
+    category: "工具出租",
+    url: "servicedisplay.php?serviceid=132",
+    list: []
+  }, {
+    site: "yorkbbs",
+    category: "画廊画框",
+    url: "/default/hualang",
+    list: []
+  }, {
+    site: "yorkbbs",
+    category: "窗帘缝纫",
+    url: "/default/curtain",
+    list: []
+  }, {
+    site: "yorkbbs",
+    category: "命理风水",
+    url: "/default/fengshui",
+    list: []
+  }];
 
 let getBaseUrl = item => {
   return item.site === 'ca51'? BASE_URL.ca51 : BASE_URL.yorkbbs;
@@ -48,11 +58,14 @@ let getCategoryAdsList = item => {
       .find('ol > li')
       .set({
         'name': 'h3 a, h2 a',
-        'link': 'h3 a@href, h2 a@href'
+        'link': 'h3 a@href, h2 a@href',
+        'language': '.contactname i, .item_cont_lg'
       })
       .data(list => {
         list.link = base + list.link.replace(/s=.*&/, '');
         list.name = list.name.replace(/\//g, '|');
+        let patt = new RegExp('\\d+$');
+        list.id = patt.exec(list.link)[0];
         result.list.push(list);
         resolve(result);
       });
@@ -71,15 +84,28 @@ let getAdDetails = (ad) => {
       .find('#MainColumn, .views')
       .set({
         'contact': '#PostBox tr:nth-child(5) td:first-child, .item-views-cont em:first-child a',
-        'tel': '#PostBox tr:nth-child(5) td:nth-child(2), .item-cont-bigphone font',
+        'avartar': '.ContentTab div:nth-child(2) img@src',
+        'phone': '#PostBox tr:nth-child(5) td:nth-child(2), .item-cont-bigphone font',
+        'phone2': '#PostBox tr:nth-child(6) td:nth-child(2)',
+        'email': '#PostBox tr:nth-child(6) td:nth-child(1) a@href',
+        'serviceArea': '#PostBox tr:nth-child(8) td:nth-child(1)',
+        'coordinates': '#PostBox tr:nth-child(8) td:nth-child(2) a@href',
         'address': '#PostBox tr:nth-child(9), .views-bigphone-address',
-        'intro': '#FontPlus, .views-detail-text',
-        'images': ['.attachlist img@src, .views-detail-text img@src']
+        'tags': '.item-cont-tags a',
+        'desc': '#FontPlus, .views-detail-text',
+        'images': ['.attachlist img@src,.views-detail-text img@src']
       })
       .data(list => {
         ad.contact = list.contact.replace(/【联系人】/, '');
-        ad.tel = list.tel.replace(/【联系电话】/, '');
+        ad.avartar = list.avartar;
+        ad.phone = list.phone.replace(/【联系电话】/, '');
+        ad.phone2 = list.phone2? list.phone2.replace(/【其他电话】/, '') : '';
+        ad.email = list.email? list.email.replace(/mailto:/, '') : '';
+        ad.serviceArea = list.serviceArea? list.serviceArea.replace(/【服务地区】/, '') : '';
+        ad.coordinates = list.coordinates;
         ad.address = list.address.replace(/【具体位置】/, '');
+        ad.tags = list.tags;
+        ad.desc = list.desc;
         if (list.images.length > 0) {
           let pics = [], pic = {};
           list.images.map(img => {
@@ -113,7 +139,7 @@ let getAdsDetails = (ads) => {
 };
 
 let getFilename = (src) => {
-  let patt = new RegExp("(?=[^\/]*$).*");
+  let patt = new RegExp('(?=[^\/]*$).*');
   return patt.exec(src);
 };
 
@@ -141,7 +167,7 @@ let createDir = (ads) => {
           const dir = `results/images/${item.site}/${item.category}/${list.name}/`;
           mkdirp(path.join(__dirname, dir), (err) => {
             if (err) { console.error(err); }
-            else { console.log('pow!'); }
+            else { console.log(`create dir ${dir}`); }
           });
         }
       });
@@ -152,7 +178,13 @@ let createDir = (ads) => {
 
 let download = (uri, filename, callback) => {
   request.head(uri, (err, res, body) => {
-    request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
+    try{
+      request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
+    } catch (err) {
+      request().write(err.message);
+      request().end();
+    }
+
   });
 };
 
@@ -163,7 +195,7 @@ let downloadImgs = ads => {
         if (list.images) {
           list.images.map(img => {
             download(img.src, img.local, () => {
-              console.log('downloaded');
+              console.log(`${img.src} downloaded`);
             });
           });
         }
@@ -178,6 +210,7 @@ let run = (categories) => {
     mkdirp(path.join(__dirname, 'results'), (err) => {
       if (err) { console.error(err); }
       else {
+        console.log(result);
         const jsonpath = path.join(__dirname, 'results/results.json');
         jsonfile.writeFile(jsonpath, result );
       }
