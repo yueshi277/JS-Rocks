@@ -27,22 +27,19 @@ const categories = [
     category: "工具出租",
     url: "servicedisplay.php?serviceid=132",
     list: []
-  }, {
+  }
+  , {
     site: "yorkbbs",
     category: "画廊画框",
     url: "/default/hualang",
     list: []
   }, {
     site: "yorkbbs",
-    category: "窗帘缝纫",
-    url: "/default/curtain",
+    category: "上网电视",
+    url: "/default/tv",
     list: []
-  }, {
-    site: "yorkbbs",
-    category: "命理风水",
-    url: "/default/fengshui",
-    list: []
-  }];
+  }
+];
 
 let getBaseUrl = item => {
   return item.site === 'ca51'? BASE_URL.ca51 : BASE_URL.yorkbbs;
@@ -83,20 +80,20 @@ let getAdDetails = (ad) => {
       .get(ad.link)
       .find('#MainColumn, .views')
       .set({
-        'contact': '#PostBox tr:nth-child(5) td:first-child, .item-views-cont em:first-child a',
+        'contact': '//*[@id="PostBox"]//tr[5]/td[1]|//*[text()="联系人"]/following-sibling::span[1]',
         'avartar': '.ContentTab div:nth-child(2) img@src',
         'phone': '#PostBox tr:nth-child(5) td:nth-child(2), .item-cont-bigphone font',
         'phone2': '#PostBox tr:nth-child(6) td:nth-child(2)',
-        'email': '#PostBox tr:nth-child(6) td:nth-child(1) a@href',
+        'email': '#PostBox tr:nth-child(6) td:nth-child(1) a@href, .item-views-cont-email a@href',
         'serviceArea': '#PostBox tr:nth-child(8) td:nth-child(1)',
         'coordinates': '#PostBox tr:nth-child(8) td:nth-child(2) a@href',
         'address': '#PostBox tr:nth-child(9), .views-bigphone-address',
-        'tags': '.item-cont-tags a',
+        'tags': ['.item-cont-tags a'],
         'desc': '#FontPlus, .views-detail-text',
         'images': ['.attachlist img@src,.views-detail-text img@src']
       })
       .data(list => {
-        ad.contact = list.contact.replace(/【联系人】/, '');
+        ad.contact = list.contact? list.contact.replace(/【联系人】/, '') : '' ;
         ad.avartar = list.avartar;
         ad.phone = list.phone.replace(/【联系电话】/, '');
         ad.phone2 = list.phone2? list.phone2.replace(/【其他电话】/, '') : '';
@@ -104,7 +101,7 @@ let getAdDetails = (ad) => {
         ad.serviceArea = list.serviceArea? list.serviceArea.replace(/【服务地区】/, '') : '';
         ad.coordinates = list.coordinates;
         ad.address = list.address.replace(/【具体位置】/, '');
-        ad.tags = list.tags;
+        ad.tags = list.tags.toString();
         ad.desc = list.desc;
         if (list.images.length > 0) {
           let pics = [], pic = {};
@@ -177,15 +174,16 @@ let createDir = (ads) => {
 };
 
 let download = (uri, filename, callback) => {
-  request.head(uri, (err, res, body) => {
-    try{
-      request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
-    } catch (err) {
-      request().write(err.message);
-      request().end();
-    }
-
-  });
+  if (uri.indexOf('no-img') <= -1) {
+    request.head(uri, (err, res, body) => {
+      try{
+        request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
+      } catch (err) {
+        request().write(err.message);
+        request().end();
+      }
+    });
+  }
 };
 
 let downloadImgs = ads => {
