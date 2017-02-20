@@ -27,8 +27,7 @@ const categories = [
     category: "工具出租",
     url: "servicedisplay.php?serviceid=132",
     list: []
-  }
-  , {
+  }, {
     site: "yorkbbs",
     category: "画廊画框",
     url: "/default/hualang",
