@@ -139,39 +139,6 @@ let getFilename = (src) => {
   return patt.exec(src);
 };
 
-let addImagesLocalPath = (ads) => {
-  return new Promise((resolve, reject) => {
-    ads.map(item => {
-      item.list.map(list => {
-        if (list.images) {
-          list.images.map(img => {
-            const dir = `results/images/${item.site}/${item.category}/${list.name}/${getFilename(img.src)}`;
-            img.local = path.join(__dirname, dir);
-          });
-        }
-      });
-    });
-    resolve(ads);
-  });
-};
-
-let createDir = (ads) => {
-  return new Promise((resolve, reject) => {
-    ads.map(item => {
-      item.list.map(list => {
-        if (list.images) {
-          const dir = `results/images/${item.site}/${item.category}/${list.name}/`;
-          mkdirp(path.join(__dirname, dir), (err) => {
-            if (err) { console.error(err); }
-            else { console.log(`create dir ${dir}`); }
-          });
-        }
-      });
-    });
-    resolve(ads);
-  });
-};
-
 let download = (uri, filename, callback) => {
   if (uri.indexOf('no-img') <= -1) {
     request.head(uri, (err, res, body) => {
@@ -185,12 +152,19 @@ let download = (uri, filename, callback) => {
   }
 };
 
-let downloadImgs = ads => {
+let downloadImages = (ads) => {
   return new Promise((resolve, reject) => {
     ads.map(item => {
       item.list.map(list => {
         if (list.images) {
+          let dir = `results/images/${item.site}/${item.category}/${list.name}/`;
+          mkdirp(path.join(__dirname, dir), (err) => {
+            if (err) { console.error(err); }
+            else { console.log(`create dir ${dir}`); }
+          });
           list.images.map(img => {
+            const local = `${dir}${getFilename(img.src)}`;
+            img.local = path.join(__dirname, local);
             download(img.src, img.local, () => {
               console.log(`${img.src} downloaded`);
             });
@@ -203,7 +177,7 @@ let downloadImgs = ads => {
 };
 
 let run = (categories) => {
-  getCategoriesAdList(categories).then(getAdsDetails).then(addImagesLocalPath).then(createDir).then(downloadImgs).then(result => {
+  getCategoriesAdList(categories).then(getAdsDetails).then(downloadImages).then(result => {
     mkdirp(path.join(__dirname, 'results'), (err) => {
       if (err) { console.error(err); }
       else {
