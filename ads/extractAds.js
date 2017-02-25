@@ -140,9 +140,9 @@ let getFilename = (src) => {
 };
 
 let download = (uri, filename, callback) => {
-  if (uri.indexOf('no-img') <= -1) {
+  if (uri.indexOf('no-img') < 0) {
     request.head(uri, (err, res, body) => {
-      try{
+      try {
         request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
       } catch (err) {
         request().write(err.message);
@@ -176,7 +176,7 @@ let downloadImages = (ads) => {
   });
 };
 
-let run = (categories) => {
+let run = () => {
   getCategoriesAdList(categories).then(getAdsDetails).then(downloadImages).then(result => {
     mkdirp(path.join(__dirname, 'results'), (err) => {
       if (err) { console.error(err); }
@@ -191,4 +191,4 @@ let run = (categories) => {
   });
 };
 
-run(categories);
+run();
