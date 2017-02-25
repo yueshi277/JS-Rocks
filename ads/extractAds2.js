@@ -1,9 +1,9 @@
-const Rx = require('rxjs/Rx'),
+const fs = require('fs'),
+  Rx = require('rxjs/Rx'),
   osmosis = require('osmosis'),
   path = require('path'),
   request = require('request'),
   mkdirp = require('mkdirp'),
-  fs = require('fs'),
   jsonfile = require('jsonfile');
 
 const categories = [
@@ -89,7 +89,7 @@ let getAdDetails = (ad) => {
         list.tags = list.tags.toString();
         observer.next(Object.assign({}, ad, list));
       });
-	});
+  });
 };
 
 let download = (uri, filename, callback) => {
