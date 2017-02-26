@@ -93,7 +93,7 @@ let getAdDetails = (ad) => {
 };
 
 let getFilename = (src) => {
-  let patt = new RegExp('(?=[^\/]*$).*');
+  const patt = new RegExp('(?=[^\/]*$).*');
   return patt.exec(src);
 };
 
@@ -145,7 +145,7 @@ let run = () => {
   const sub = source.subscribe(val => {
     result.push(val);
     const jsonpath = path.join(__dirname, 'results/results.json');
-    jsonfile.writeFile(jsonpath, val );
+    jsonfile.writeFile(jsonpath, result);
   });
 };
 
