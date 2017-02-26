@@ -98,16 +98,14 @@ let getFilename = (src) => {
 };
 
 let download = (uri, filename, callback) => {
-  if (uri.indexOf('no-img') < 0) {
-    request.head(uri, (err, res, body) => {
-      try {
-        request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
-      } catch (err) {
-        request().write(err.message);
-        request().end();
-      }
-    });
-  }
+  request.head(uri, (err, res, body) => {
+    try {
+      request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
+    } catch (err) {
+      request().write(err.message);
+      request().end();
+    }
+  });
 };
 
 let downloadImages = item => {
@@ -120,7 +118,7 @@ let downloadImages = item => {
           item.images.forEach(img => {
             const fileName = getFilename(img);
             const patt = new RegExp('.*\\.[a-zA-Z]+');
-            if (patt.test(fileName)) {
+            if (patt.test(fileName) && !fileName.includes('no-img')) {
               const local = path.join(__dirname, `${dir}${fileName}`);
               download(img, local, () => {
                 console.log(`${img} downloaded`);
