@@ -92,6 +92,11 @@ let getAdDetails = (ad) => {
   });
 };
 
+let getFilename = (src) => {
+  let patt = new RegExp('(?=[^\/]*$).*');
+  return patt.exec(src);
+};
+
 let download = (uri, filename, callback) => {
   if (uri.indexOf('no-img') < 0) {
     request.head(uri, (err, res, body) => {
@@ -105,23 +110,22 @@ let download = (uri, filename, callback) => {
   }
 };
 
-let getFilename = (src) => {
-  let patt = new RegExp('(?=[^\/]*$).*');
-  return patt.exec(src);
-};
-
 let downloadImages = item => {
   return new Rx.Observable(observer => {
     if (item.images.length > 0) {
-      let dir = `results/images/${item.site}/${item.category}/${item.name}/`;
+      const dir = `results/images/${item.site}/${item.category}/${item.name}/`;
       mkdirp(path.join(__dirname, dir), (err) => {
         if (err) { console.error(err); }
         else {
-          item.images.map(img => {
-            local = path.join(__dirname, `${dir}${getFilename(img)}`);
-            download(img, local, () => {
-              console.log(`${img} downloaded`);
-            });
+          item.images.forEach(img => {
+            const fileName = getFilename(img);
+            const patt = new RegExp('.*\\.[a-zA-Z]+');
+            if (patt.test(fileName)) {
+              const local = path.join(__dirname, `${dir}${fileName}`);
+              download(img, local, () => {
+                console.log(`${img} downloaded`);
+              });
+            }
           });
         }
       });
