@@ -135,15 +135,14 @@ let downloadImages = item => {
 let run = () => {
   let result = [];
 
-  const source = Rx.Observable.from(categories)
+  Rx.Observable.from(categories)
     .mergeMap(val => getCategoryAdsList(val))
     .flatMap(val => getAdDetails(val))
-    .flatMap(ad => downloadImages(ad));
-
-  const sub = source.subscribe(val => {
-    result.push(val);
-    const jsonpath = path.join(__dirname, 'results/results.json');
-    jsonfile.writeFile(jsonpath, result);
+    .flatMap(ad => downloadImages(ad))
+    .subscribe(val => {
+      result.push(val);
+      const jsonpath = path.join(__dirname, 'results/results.json');
+      jsonfile.writeFile(jsonpath, result);
   });
 };
 
