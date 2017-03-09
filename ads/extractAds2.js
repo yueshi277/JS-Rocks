@@ -61,6 +61,26 @@ let getCategoryAdsList = item => {
   });
 };
 
+let handleEmail = (email) => {
+  let s, j, r, c, id;
+  if (email.includes('email-protection')) {
+    try {
+      let patt = new RegExp('\\w+$');
+      id = patt.exec(email)[0];
+      console.log(id);
+      s = '';
+      r = parseInt(id.substr(0, 2), 16);
+      for (j = 2; id.length - j; j += 2) {
+        c = parseInt(id.substr(j, 2), 16) ^ r;
+        s += String.fromCharCode(c);
+      }
+      return s;
+    } catch(e) {}
+  } else {
+    return email.replace(/mailto:/, '');
+  }
+};
+
 let getAdDetails = (ad) => {
   return new Rx.Observable(observer => {
     osmosis
@@ -80,11 +100,11 @@ let getAdDetails = (ad) => {
         'images': ['.attachlist img@src,.views-detail-text img@src']
       })
       .data(list => {
-        list.contact = list.contact? list.contact.replace(/【联系人】/, '') : '' ;
+        list.contact = list.contact ? list.contact.replace(/【联系人】/, '') : '' ;
         list.phone = list.phone.replace(/【联系电话】/, '');
-        list.phone2 = list.phone2? list.phone2.replace(/【其他电话】/, '') : '';
-        list.email = list.email? list.email.replace(/mailto:/, '') : '';
-        list.serviceArea = list.serviceArea? list.serviceArea.replace(/【服务地区】/, '') : '';
+        list.phone2 = list.phone2 ? list.phone2.replace(/【其他电话】/, '') : '';
+        list.email = list.email ? handleEmail(list.email) : '';
+        list.serviceArea = list.serviceArea ? list.serviceArea.replace(/【服务地区】/, '') : '';
         list.address = list.address.replace(/【具体位置】/, '');
         list.tags = list.tags.toString();
         observer.next(Object.assign({}, ad, list));

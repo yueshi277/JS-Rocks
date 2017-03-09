@@ -73,6 +73,26 @@ let getCategoriesAdList = (categories) => {
   return Promise.all(promises);
 };
 
+let handleEmail = (email) => {
+  let s, j, r, c, id;
+  if (email.includes('email-protection')) {
+    try {
+      let patt = new RegExp('\\w+$');
+      id = patt.exec(email)[0];
+      console.log(id);
+      s = '';
+      r = parseInt(id.substr(0, 2), 16);
+      for (j = 2; id.length - j; j += 2) {
+        c = parseInt(id.substr(j, 2), 16) ^ r;
+        s += String.fromCharCode(c);
+      }
+      return s;
+    } catch(e) {}
+  } else {
+    return email.replace(/mailto:/, '');
+  }
+};
+
 let getAdDetails = (ad) => {
   return new Promise((resolve, reject) => {
     osmosis
@@ -92,12 +112,12 @@ let getAdDetails = (ad) => {
         'images': ['.attachlist img@src,.views-detail-text img@src']
       })
       .data(list => {
-        ad.contact = list.contact? list.contact.replace(/【联系人】/, '') : '' ;
+        ad.contact = list.contact ? list.contact.replace(/【联系人】/, '') : '' ;
         ad.avartar = list.avartar;
         ad.phone = list.phone.replace(/【联系电话】/, '');
-        ad.phone2 = list.phone2? list.phone2.replace(/【其他电话】/, '') : '';
-        ad.email = list.email? list.email.replace(/mailto:/, '') : '';
-        ad.serviceArea = list.serviceArea? list.serviceArea.replace(/【服务地区】/, '') : '';
+        ad.phone2 = list.phone2 ? list.phone2.replace(/【其他电话】/, '') : '';
+        ad.email = list.email ? handleEmail(list.email) : '';
+        ad.serviceArea = list.serviceArea ? list.serviceArea.replace(/【服务地区】/, '') : '';
         ad.coordinates = list.coordinates;
         ad.address = list.address.replace(/【具体位置】/, '');
         ad.tags = list.tags.toString();
