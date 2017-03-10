@@ -61,21 +61,24 @@ let getCategoryAdsList = item => {
   });
 };
 
-let handleEmail = (email) => {
+let decodeEmail = email => {
   let s, j, r, c, id;
+  try {
+    let patt = new RegExp('\\w+$');
+    id = patt.exec(email)[0];
+    s = '';
+    r = parseInt(id.substr(0, 2), 16);
+    for (j = 2; id.length - j; j += 2) {
+      c = parseInt(id.substr(j, 2), 16) ^ r;
+      s += String.fromCharCode(c);
+    }
+    return s;
+  } catch(e) {}
+};
+
+let handleEmail = email => {
   if (email.includes('email-protection')) {
-    try {
-      let patt = new RegExp('\\w+$');
-      id = patt.exec(email)[0];
-      console.log(id);
-      s = '';
-      r = parseInt(id.substr(0, 2), 16);
-      for (j = 2; id.length - j; j += 2) {
-        c = parseInt(id.substr(j, 2), 16) ^ r;
-        s += String.fromCharCode(c);
-      }
-      return s;
-    } catch(e) {}
+    return decodeEmail(email);
   } else {
     return email.replace(/mailto:/, '');
   }
